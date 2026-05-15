@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        PATH = "/opt/homebrew/bin:/usr/local/bin:$PATH"
+    }
+
     stages {
 
         stage('Checkout') {
