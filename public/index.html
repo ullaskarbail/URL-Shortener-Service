@@ -3,35 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevOps URL Shortener</title>
+    <title>Premium URL Shortener</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; color: #333; }
-        .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1 { color: #0056b3; }
-        input { padding: 10px; width: 80%; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
-        button { padding: 10px 20px; cursor: pointer; background-color: #0056b3; color: white; border: none; border-radius: 4px; font-size: 16px; }
-        button:hover { background-color: #004494; }
-        #result { margin-top: 20px; font-size: 18px; }
-        #result a { color: #28a745; text-decoration: none; font-weight: bold; }
-        #result a:hover { text-decoration: underline; }
-        .error { color: red; }
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-color: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text: #f8fafc;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+            color: var(--text);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+        }
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+        .input-group {
+            display: flex;
+            margin-top: 35px;
+            gap: 12px;
+        }
+        input {
+            flex: 1;
+            padding: 16px 20px;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        }
+        button {
+            padding: 16px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        #result {
+            margin-top: 25px;
+            font-size: 1.15rem;
+            min-height: 30px;
+        }
+        #result a {
+            color: #34d399;
+            text-decoration: none;
+            font-weight: bold;
+            background: rgba(52, 211, 153, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        #result a:hover {
+            background: rgba(52, 211, 153, 0.2);
+        }
+        
+        .dashboard {
+            margin-top: 50px;
+            width: 100%;
+            max-width: 850px;
+            animation: fadeIn 1s ease-out 0.2s backwards;
+        }
+        .dashboard h2 {
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.3);
+        }
+        th, td {
+            padding: 18px 24px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        th { 
+            background: rgba(0,0,0,0.4); 
+            font-weight: 600; 
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        .clicks { font-weight: bold; color: #fbbf24; font-size: 1.2rem; }
+        .original-url { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; color: #cbd5e1;}
+        .short-url { color: #818cf8; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .short-url:hover { color: #a5b4fc; text-decoration: underline; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>DevOps URL Shortener</h1>
-        <p>A simple app demonstrating a complete CI/CD pipeline.</p>
-        <input type="text" id="urlInput" placeholder="Enter a long URL here (e.g., https://example.com)">
-        <br>
-        <button onclick="shortenUrl()">Shorten URL</button>
+    <div class="glass-card">
+        <h1>LinkShrink Pro</h1>
+        <p style="color: #94a3b8; font-size: 1.1rem;">Create tracked, shareable links instantly.</p>
+        
+        <div class="input-group">
+            <input type="url" id="urlInput" placeholder="Paste your long URL here (https://...)">
+            <button onclick="shortenUrl()">Shorten</button>
+        </div>
         <div id="result"></div>
     </div>
 
+    <div class="dashboard">
+        <h2>Real-time Analytics Dashboard</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Short Link</th>
+                    <th>Original Destination</th>
+                    <th>Clicks</th>
+                </tr>
+            </thead>
+            <tbody id="statsBody">
+                <tr><td colspan="3" style="text-align: center; color: #64748b; padding: 40px;">No links generated yet. Create one above!</td></tr>
+            </tbody>
+        </table>
+    </div>
+
     <script>
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/stats');
+                const stats = await res.json();
+                const tbody = document.getElementById('statsBody');
+                
+                if (stats.length === 0) return;
+                
+                tbody.innerHTML = stats.map(s => `
+                    <tr>
+                        <td><a href="${s.shortUrl}" target="_blank" class="short-url">${s.shortUrl}</a></td>
+                        <td><span class="original-url" title="${s.originalUrl}">${s.originalUrl}</span></td>
+                        <td class="clicks">🔥 ${s.clicks}</td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                console.error("Failed to load stats");
+            }
+        }
+
         async function shortenUrl() {
             const url = document.getElementById('urlInput').value;
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = 'Processing...';
+            
+            if (!url) return;
+            resultDiv.innerHTML = '<span style="color:#94a3b8;">Shrinking link...</span>';
             
             try {
                 const response = await fetch('/api/shorten', {
@@ -43,14 +215,21 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    resultDiv.innerHTML = `Success! Your short URL: <br><br><a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+                    resultDiv.innerHTML = `Success! 🎉 <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+                    document.getElementById('urlInput').value = '';
+                    loadStats(); // Refresh dashboard immediately
                 } else {
-                    resultDiv.innerHTML = `<span class="error">Error: ${data.error}</span>`;
+                    resultDiv.innerHTML = `<span style="color: #ef4444;">Error: ${data.error}</span>`;
                 }
             } catch (error) {
-                resultDiv.innerHTML = '<span class="error">Network error occurred. Make sure the server is running.</span>';
+                resultDiv.innerHTML = '<span style="color: #ef4444;">Network error. Server might be down.</span>';
             }
         }
+
+        // Load stats on page load
+        loadStats();
+        // Refresh stats every 5 seconds to feel "real-time"
+        setInterval(loadStats, 5000);
     </script>
 </body>
 </html>
