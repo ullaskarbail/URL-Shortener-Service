@@ -39,7 +39,7 @@ pipeline {
 
                 docker run -d \
                   --name url-shortener-container \
-                  -p 3000:3000 \
+                  -p 3003:3000 \
                   url-shortener-app
                 '''
             }
